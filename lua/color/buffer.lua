@@ -1,5 +1,6 @@
 local parser = require("color.parser")
 local highlight = require("color.highlight")
+local lsp = require("color.lsp")
 
 local M = {}
 
@@ -29,6 +30,23 @@ local function highlight_line(buf, row, options)
   local modes = normalize_modes(options.mode)
   local glyph = options.virtualtext or "██"
   local matches = parser.scan_line(line, options)
+
+  if options.lsp then
+    local lsp_colors = lsp.get_colors(buf, row)
+    for _, lc in ipairs(lsp_colors) do
+      local dominated = false
+      for _, m in ipairs(matches) do
+        if lc.col_start <= m.col_end and lc.col_end >= m.col_start then
+          dominated = true
+          break
+        end
+      end
+      if not dominated then
+        matches[#matches + 1] = lc
+      end
+    end
+  end
+
   for _, m in ipairs(matches) do
     for _, mode in ipairs(modes) do
       local hl_group = highlight.ensure(m.rgb_hex, mode)
@@ -69,9 +87,23 @@ function M.attach(buf, options)
   local line_count = vim.api.nvim_buf_line_count(buf)
   highlight_range(buf, 0, line_count, options)
 
+  local function lsp_refresh()
+    if not attached[buf] or not vim.api.nvim_buf_is_valid(buf) then
+      return
+    end
+    local min = vim.fn.line("w0") - 1
+    local max = vim.fn.line("w$")
+    highlight_range(buf, min, max, attached[buf])
+  end
+
+  if options.lsp then
+    lsp.attach(buf, lsp_refresh)
+  end
+
   vim.api.nvim_buf_attach(buf, false, {
     on_detach = function(_, b)
       attached[b] = nil
+      lsp.detach(b)
     end,
   })
 
@@ -81,6 +113,9 @@ function M.attach(buf, options)
     callback = function()
       if not attached[buf] then
         return
+      end
+      if options.lsp then
+        lsp.trigger(buf, lsp_refresh)
       end
       if vim.fn.mode() == "i" then
         local row = vim.api.nvim_win_get_cursor(0)[1] - 1
@@ -113,6 +148,7 @@ function M.detach(buf)
     return
   end
   attached[buf] = nil
+  lsp.detach(buf)
   vim.api.nvim_buf_clear_namespace(buf, ns, 0, -1)
   vim.api.nvim_clear_autocmds({ group = augroup, buffer = buf })
 end

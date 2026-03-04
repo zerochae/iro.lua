@@ -151,7 +151,7 @@ function M.scan_line(line, options)
       if rgb and in_string(ws, regions) then
         local before = ws > 1 and line:byte(ws - 1) or 0
         local after = we <= #line and line:byte(we) or 0
-        if before ~= 45 and before ~= 95 and after ~= 45 and after ~= 95 then
+        if before ~= 45 and before ~= 95 and before ~= 46 and after ~= 45 and after ~= 95 and after ~= 46 then
           matches[#matches + 1] = { col_start = ws, col_end = we - 1, rgb_hex = rgb }
         end
       end

@@ -9,6 +9,7 @@ M.defaults = {
   virtualtext = "██",
   filetypes = { "*" },
   exclusions = {},
+  lsp = true,
 }
 
 ---@type color.Options

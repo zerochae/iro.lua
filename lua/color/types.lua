@@ -9,6 +9,7 @@
 ---@field editor_bg? string
 ---@field filetypes? string[]
 ---@field exclusions? string[]
+---@field lsp? boolean
 
 ---@class color.Match
 ---@field col_start integer
