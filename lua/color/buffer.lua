@@ -47,19 +47,24 @@ local function highlight_line(buf, row, options)
     end
   end
 
+  local line_len = #line
   for _, m in ipairs(matches) do
-    for _, mode in ipairs(modes) do
-      local hl_group = highlight.ensure(m.rgb_hex, mode)
-      if mode == "virtualtext" then
-        vim.api.nvim_buf_set_extmark(buf, ns, row, m.col_start - 1, {
-          virt_text = { { glyph, hl_group } },
-          virt_text_pos = "inline",
-        })
-      else
-        vim.api.nvim_buf_set_extmark(buf, ns, row, m.col_start - 1, {
-          end_col = m.col_end,
-          hl_group = hl_group,
-        })
+    local col_start = math.min(m.col_start - 1, line_len)
+    local col_end = math.min(m.col_end, line_len)
+    if col_start < col_end then
+      for _, mode in ipairs(modes) do
+        local hl_group = highlight.ensure(m.rgb_hex, mode)
+        if mode == "virtualtext" then
+          vim.api.nvim_buf_set_extmark(buf, ns, row, col_start, {
+            virt_text = { { glyph, hl_group } },
+            virt_text_pos = "inline",
+          })
+        else
+          vim.api.nvim_buf_set_extmark(buf, ns, row, col_start, {
+            end_col = col_end,
+            hl_group = hl_group,
+          })
+        end
       end
     end
   end
