@@ -3,7 +3,7 @@ local M = {}
 ---@type table<integer, table<integer, color.Match[]>>
 local cache = {}
 
----@type table<integer, uv_timer_t>
+---@type table<integer, uv.uv_timer_t>
 local timers = {}
 
 ---@type table<integer, integer[]>
@@ -85,12 +85,16 @@ local function debounced_request(buf, callback)
     timers[buf] = vim.uv.new_timer()
   end
 
-  timers[buf]:start(DEBOUNCE_MS, 0, vim.schedule_wrap(function()
-    if not vim.api.nvim_buf_is_valid(buf) then
-      return
-    end
-    M.request(buf, callback)
-  end))
+  timers[buf]:start(
+    DEBOUNCE_MS,
+    0,
+    vim.schedule_wrap(function()
+      if not vim.api.nvim_buf_is_valid(buf) then
+        return
+      end
+      M.request(buf, callback)
+    end)
+  )
 end
 
 ---@param buf integer

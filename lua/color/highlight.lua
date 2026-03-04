@@ -66,8 +66,7 @@ end
 local GAMMA = 1.5
 
 local function lighten(r, g, b)
-  return
-    math.floor(255 * (r / 255) ^ (1 / GAMMA)),
+  return math.floor(255 * (r / 255) ^ (1 / GAMMA)),
     math.floor(255 * (g / 255) ^ (1 / GAMMA)),
     math.floor(255 * (b / 255) ^ (1 / GAMMA))
 end
@@ -99,13 +98,6 @@ function M.ensure(rgb_hex, mode)
       fg = luminance > 0.5 and "#000000" or "#ffffff"
     end
     vim.api.nvim_set_hl(0, name, { fg = fg, bg = bg_hex })
-  elseif mode == "virtualtext" then
-    local color = "#" .. rgb_hex
-    if low then
-      local lr, lg, lb = lighten(r, g, b)
-      color = string.format("#%02x%02x%02x", lr, lg, lb)
-    end
-    vim.api.nvim_set_hl(0, name, { fg = color })
   else
     local color = "#" .. rgb_hex
     if low then
