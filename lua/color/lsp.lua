@@ -1,12 +1,12 @@
 local M = {}
 
----@type table<integer, table<integer, color.Match[]>>
+---@type color.LspColorCache
 local cache = {}
 
----@type table<integer, uv.uv_timer_t>
+---@type color.TimerMap
 local timers = {}
 
----@type table<integer, integer[]>
+---@type color.AutocmdMap
 local autocmd_ids = {}
 
 local DEBOUNCE_MS = 200

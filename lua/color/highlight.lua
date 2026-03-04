@@ -1,6 +1,6 @@
 local M = {}
 
----@type table<string, string>
+---@type color.HighlightCache
 local CACHE = {}
 
 local CONTRAST_THRESHOLD = 0.3
@@ -8,11 +8,11 @@ local CONTRAST_THRESHOLD = 0.3
 ---@type string?
 local user_editor_bg = nil
 
----@type {r: number, g: number, b: number}?
+---@type color.RGB?
 local editor_bg = nil
 
 ---@param hex string
----@return {r: number, g: number, b: number}
+---@return color.RGB
 local function parse_hex(hex)
   hex = hex:gsub("^#", "")
   return {

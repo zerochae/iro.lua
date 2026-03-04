@@ -7,7 +7,7 @@ local M = {}
 local ns = vim.api.nvim_create_namespace("color")
 local augroup = vim.api.nvim_create_augroup("color_buffer", { clear = true })
 
----@type table<integer, color.Options>
+---@type color.AttachedMap
 local attached = {}
 
 ---@param mode color.Mode|color.Mode[]

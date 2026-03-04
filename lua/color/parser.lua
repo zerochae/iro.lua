@@ -4,7 +4,7 @@ local HEX6 = "#(%x%x%x%x%x%x)"
 local HEX3 = "#(%x%x%x)"
 local WORD = "()(%a+)()"
 
----@type table<string, string>?
+---@type color.ColorMap?
 local COLOR_MAP = nil
 
 local function init_colors()
@@ -137,6 +137,7 @@ function M.scan_line(line, options)
     if not COLOR_MAP then
       init_colors()
     end
+    ---@cast COLOR_MAP color.ColorMap
     local regions = find_string_regions(line)
     local init = 1
     while init <= #line do
