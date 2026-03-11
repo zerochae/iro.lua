@@ -1,20 +1,20 @@
-if vim.g.loaded_color then
+if vim.g.loaded_iro then
   return
 end
-vim.g.loaded_color = true
+vim.g.loaded_iro = true
 
-vim.api.nvim_create_user_command("Color", function(args)
-  local color = require("color")
+vim.api.nvim_create_user_command("Iro", function(args)
+  local iro = require("iro")
   local sub = args.fargs[1]
 
   if not sub or sub == "toggle" then
-    color.toggle()
+    iro.toggle()
   elseif sub == "attach" then
-    color.attach()
+    iro.attach()
   elseif sub == "detach" then
-    color.detach()
+    iro.detach()
   elseif sub == "reload" then
-    color.reload()
+    iro.reload()
   end
 end, {
   nargs = "?",

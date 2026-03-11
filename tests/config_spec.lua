@@ -1,4 +1,4 @@
-local config = require("color.config")
+local config = require("iro.config")
 
 describe("config", function()
   before_each(function()

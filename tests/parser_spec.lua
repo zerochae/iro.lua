@@ -1,4 +1,4 @@
-local parser = require("color.parser")
+local parser = require("iro.parser")
 
 local RRGGBB = { RRGGBB = true }
 local RGB = { RGB = true }

@@ -1,11 +1,11 @@
-local config = require("color.config")
-local buffer = require("color.buffer")
-local highlight = require("color.highlight")
-local parser = require("color.parser")
+local config = require("iro.config")
+local buffer = require("iro.buffer")
+local highlight = require("iro.highlight")
+local parser = require("iro.parser")
 
 local M = {}
 
-local augroup = vim.api.nvim_create_augroup("color", { clear = true })
+local augroup = vim.api.nvim_create_augroup("iro", { clear = true })
 
 ---@param buf integer
 ---@return boolean
@@ -34,7 +34,7 @@ local function should_attach(buf)
   return false
 end
 
----@param opts? color.Options
+---@param opts? iro.Options
 function M.setup(opts)
   config.setup(opts)
   highlight.set_editor_bg(config.get().editor_bg)

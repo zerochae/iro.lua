@@ -1,6 +1,6 @@
 local M = {}
 
----@type color.HighlightCache
+---@type iro.HighlightCache
 local CACHE = {}
 
 local CONTRAST_THRESHOLD = 0.3
@@ -8,11 +8,11 @@ local CONTRAST_THRESHOLD = 0.3
 ---@type string?
 local user_editor_bg = nil
 
----@type color.RGB?
+---@type iro.RGB?
 local editor_bg = nil
 
 ---@param hex string
----@return color.RGB
+---@return iro.RGB
 local function parse_hex(hex)
   hex = hex:gsub("^#", "")
   return {
@@ -72,7 +72,7 @@ local function lighten(r, g, b)
 end
 
 ---@param rgb_hex string
----@param mode color.Mode
+---@param mode iro.Mode
 ---@return string hl_group
 function M.ensure(rgb_hex, mode)
   local key = mode .. "_" .. rgb_hex
@@ -80,7 +80,7 @@ function M.ensure(rgb_hex, mode)
     return CACHE[key]
   end
 
-  local name = "color_" .. key
+  local name = "iro_" .. key
   local r = tonumber(rgb_hex:sub(1, 2), 16) or 0
   local g = tonumber(rgb_hex:sub(3, 4), 16) or 0
   local b = tonumber(rgb_hex:sub(5, 6), 16) or 0

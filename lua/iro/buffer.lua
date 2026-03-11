@@ -1,17 +1,17 @@
-local parser = require("color.parser")
-local highlight = require("color.highlight")
-local lsp = require("color.lsp")
+local parser = require("iro.parser")
+local highlight = require("iro.highlight")
+local lsp = require("iro.lsp")
 
 local M = {}
 
-local ns = vim.api.nvim_create_namespace("color")
-local augroup = vim.api.nvim_create_augroup("color_buffer", { clear = true })
+local ns = vim.api.nvim_create_namespace("iro")
+local augroup = vim.api.nvim_create_augroup("iro_buffer", { clear = true })
 
----@type color.AttachedMap
+---@type iro.AttachedMap
 local attached = {}
 
----@param mode color.Mode|color.Mode[]
----@return color.Mode[]
+---@param mode iro.Mode|iro.Mode[]
+---@return iro.Mode[]
 local function normalize_modes(mode)
   if type(mode) == "table" then
     return mode
@@ -21,7 +21,7 @@ end
 
 ---@param buf integer
 ---@param row integer
----@param options color.Options
+---@param options iro.Options
 local function highlight_line(buf, row, options)
   local line = vim.api.nvim_buf_get_lines(buf, row, row + 1, false)[1]
   if not line then
@@ -73,7 +73,7 @@ end
 ---@param buf integer
 ---@param min integer
 ---@param max integer
----@param options color.Options
+---@param options iro.Options
 local function highlight_range(buf, min, max, options)
   vim.api.nvim_buf_clear_namespace(buf, ns, min, max)
   for row = min, max - 1 do
@@ -82,7 +82,7 @@ local function highlight_range(buf, min, max, options)
 end
 
 ---@param buf integer
----@param options color.Options
+---@param options iro.Options
 function M.attach(buf, options)
   if attached[buf] then
     return
@@ -159,7 +159,7 @@ function M.detach(buf)
 end
 
 ---@param buf integer
----@param options color.Options
+---@param options iro.Options
 function M.toggle(buf, options)
   if attached[buf] then
     M.detach(buf)
@@ -169,7 +169,7 @@ function M.toggle(buf, options)
 end
 
 ---@param buf? integer
----@param options color.Options
+---@param options iro.Options
 function M.reload(buf, options)
   if buf then
     if attached[buf] then

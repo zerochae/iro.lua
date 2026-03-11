@@ -1,12 +1,12 @@
 local M = {}
 
----@type color.LspColorCache
+---@type iro.LspColorCache
 local cache = {}
 
----@type color.TimerMap
+---@type iro.TimerMap
 local timers = {}
 
----@type color.AutocmdMap
+---@type iro.AutocmdMap
 local autocmd_ids = {}
 
 local DEBOUNCE_MS = 200
@@ -51,7 +51,7 @@ function M.request(buf, callback)
       return
     end
 
-    ---@type table<integer, color.Match[]>
+    ---@type table<integer, iro.Match[]>
     local buf_colors = {}
     for _, item in ipairs(result) do
       local row = item.range.start.line
@@ -99,7 +99,7 @@ end
 
 ---@param buf integer
 ---@param row integer
----@return color.Match[]
+---@return iro.Match[]
 function M.get_colors(buf, row)
   if not cache[buf] then
     return {}
@@ -114,7 +114,7 @@ function M.attach(buf, callback)
     return
   end
 
-  local augroup = vim.api.nvim_create_augroup("color_lsp_" .. buf, { clear = true })
+  local augroup = vim.api.nvim_create_augroup("iro_lsp_" .. buf, { clear = true })
 
   local ids = {}
 
@@ -150,7 +150,7 @@ end
 ---@param buf integer
 function M.detach(buf)
   if autocmd_ids[buf] then
-    vim.api.nvim_del_augroup_by_name("color_lsp_" .. buf)
+    vim.api.nvim_del_augroup_by_name("iro_lsp_" .. buf)
     autocmd_ids[buf] = nil
   end
 

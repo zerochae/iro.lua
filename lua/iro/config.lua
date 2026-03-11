@@ -1,6 +1,6 @@
 local M = {}
 
----@type color.Options
+---@type iro.Options
 M.defaults = {
   RGB = true,
   RRGGBB = true,
@@ -12,15 +12,15 @@ M.defaults = {
   lsp = true,
 }
 
----@type color.Options
+---@type iro.Options
 M.options = {}
 
----@param opts? color.Options
+---@param opts? iro.Options
 function M.setup(opts)
   M.options = vim.tbl_deep_extend("force", {}, M.defaults, opts or {})
 end
 
----@return color.Options
+---@return iro.Options
 function M.get()
   return M.options
 end

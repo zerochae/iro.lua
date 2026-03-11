@@ -1,4 +1,4 @@
-local highlight = require("color.highlight")
+local highlight = require("iro.highlight")
 
 local M = {}
 

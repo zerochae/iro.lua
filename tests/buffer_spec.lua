@@ -1,7 +1,7 @@
-local buffer = require("color.buffer")
-local highlight = require("color.highlight")
+local buffer = require("iro.buffer")
+local highlight = require("iro.highlight")
 
-local ns = vim.api.nvim_create_namespace("color")
+local ns = vim.api.nvim_create_namespace("iro")
 
 local function make_buf(lines)
   local buf = vim.api.nvim_create_buf(false, true)

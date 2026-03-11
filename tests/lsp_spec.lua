@@ -1,4 +1,4 @@
-local lsp = require("color.lsp")
+local lsp = require("iro.lsp")
 
 describe("lsp", function()
   it("returns empty for unknown buffer", function()

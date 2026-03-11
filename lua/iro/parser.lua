@@ -4,7 +4,7 @@ local HEX6 = "#(%x%x%x%x%x%x)"
 local HEX3 = "#(%x%x%x)"
 local WORD = "()(%a+)()"
 
----@type color.ColorMap?
+---@type iro.ColorMap?
 local COLOR_MAP = nil
 
 local function init_colors()
@@ -95,8 +95,8 @@ local function in_string(pos, regions)
 end
 
 ---@param line string
----@param options color.Options
----@return color.Match[]
+---@param options iro.Options
+---@return iro.Match[]
 function M.scan_line(line, options)
   local matches = {}
 
@@ -137,7 +137,7 @@ function M.scan_line(line, options)
     if not COLOR_MAP then
       init_colors()
     end
-    ---@cast COLOR_MAP color.ColorMap
+    ---@cast COLOR_MAP iro.ColorMap
     local regions = find_string_regions(line)
     local init = 1
     while init <= #line do
