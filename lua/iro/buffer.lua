@@ -124,6 +124,7 @@ function M.attach(buf, options)
       end
       if vim.fn.mode() == "i" then
         local row = vim.api.nvim_win_get_cursor(0)[1] - 1
+        vim.api.nvim_buf_clear_namespace(buf, ns, row, row + 1)
         highlight_line(buf, row, attached[buf])
       else
         local min = vim.fn.line("w0") - 1
