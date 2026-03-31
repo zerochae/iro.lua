@@ -5,6 +5,7 @@ M.defaults = {
   RGB = true,
   RRGGBB = true,
   names = true,
+  css_fn = true,
   mode = "background",
   virtualtext = "██",
   filetypes = { "*" },

@@ -9,12 +9,14 @@
 ---@field editor_bg? string
 ---@field filetypes? string[]
 ---@field exclusions? string[]
+---@field css_fn? boolean
 ---@field lsp? boolean
 
 ---@class iro.Match
 ---@field col_start integer
 ---@field col_end integer
 ---@field rgb_hex string
+---@field alpha? number
 
 ---@class iro.RGB
 ---@field r number

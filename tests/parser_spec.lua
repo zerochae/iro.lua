@@ -3,7 +3,8 @@ local parser = require("iro.parser")
 local RRGGBB = { RRGGBB = true }
 local RGB = { RGB = true }
 local NAMES = { names = true }
-local ALL = { RRGGBB = true, RGB = true, names = true }
+local CSS_FN = { css_fn = true }
+local ALL = { RRGGBB = true, RGB = true, names = true, css_fn = true }
 
 describe("parser", function()
   describe("RRGGBB", function()
@@ -111,6 +112,65 @@ describe("parser", function()
 
     it("matches multiple names in one line", function()
       local m = parser.scan_line('"red" and "blue"', NAMES)
+      assert.are.equal(2, #m)
+    end)
+  end)
+
+  describe("css_fn", function()
+    it("matches rgb()", function()
+      local m = parser.scan_line("color: rgb(255, 0, 0);", CSS_FN)
+      assert.are.equal(1, #m)
+      assert.are.equal("ff0000", m[1].rgb_hex)
+      assert.is_nil(m[1].alpha)
+    end)
+
+    it("matches rgba() with alpha", function()
+      local m = parser.scan_line("color: rgba(0, 0, 0, .3);", CSS_FN)
+      assert.are.equal(1, #m)
+      assert.are.equal("000000", m[1].rgb_hex)
+      assert.are.near(0.3, m[1].alpha, 0.001)
+    end)
+
+    it("matches rgba() with alpha 1", function()
+      local m = parser.scan_line("rgba(255, 128, 0, 1)", CSS_FN)
+      assert.are.equal(1, #m)
+      assert.are.equal("ff8000", m[1].rgb_hex)
+      assert.are.near(1, m[1].alpha, 0.001)
+    end)
+
+    it("matches rgba() with alpha 0", function()
+      local m = parser.scan_line("rgba(0, 0, 0, 0)", CSS_FN)
+      assert.are.equal(1, #m)
+      assert.are.near(0, m[1].alpha, 0.001)
+    end)
+
+    it("matches multiple rgba on same line", function()
+      local m = parser.scan_line("rgba(255,0,0,.5) rgba(0,0,255,.8)", CSS_FN)
+      assert.are.equal(2, #m)
+      assert.are.equal("ff0000", m[1].rgb_hex)
+      assert.are.equal("0000ff", m[2].rgb_hex)
+    end)
+
+    it("clamps values to 0-255", function()
+      local m = parser.scan_line("rgb(300, -10, 128)", CSS_FN)
+      assert.are.equal(1, #m)
+      assert.are.equal("ff0080", m[1].rgb_hex)
+    end)
+
+    it("matches tailwind bg-[rgba(...)]", function()
+      local m = parser.scan_line('className="bg-[rgba(0,0,0,.3)]"', CSS_FN)
+      assert.are.equal(1, #m)
+      assert.are.equal("000000", m[1].rgb_hex)
+      assert.are.near(0.3, m[1].alpha, 0.001)
+    end)
+
+    it("returns empty when disabled", function()
+      local m = parser.scan_line("rgba(0,0,0,.5)", { css_fn = false })
+      assert.are.equal(0, #m)
+    end)
+
+    it("does not dominate existing hex match at same position", function()
+      local m = parser.scan_line("#ff0000 rgba(0,0,255,.5)", ALL)
       assert.are.equal(2, #m)
     end)
   end)

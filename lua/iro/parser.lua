@@ -3,6 +3,7 @@ local M = {}
 local HEX6 = "#(%x%x%x%x%x%x)"
 local HEX3 = "#(%x%x%x)"
 local WORD = "()(%a+)()"
+local RGBA_PAT = "rgba?%s*%((.-)%)"
 
 ---@type iro.ColorMap?
 local COLOR_MAP = nil
@@ -95,6 +96,40 @@ local function in_string(pos, regions)
 end
 
 ---@param line string
+---@param init integer
+---@return iro.Match[]
+local function find_rgba(line, init)
+  local results = {}
+  local search_start = init
+  while search_start <= #line do
+    local s, e, inner = line:find(RGBA_PAT, search_start)
+    if not s then
+      break
+    end
+    local parts = {}
+    for part in inner:gmatch("[^,%s]+") do
+      parts[#parts + 1] = part
+    end
+    if #parts >= 3 then
+      local r = math.floor(tonumber(parts[1]) or 0)
+      local g = math.floor(tonumber(parts[2]) or 0)
+      local b = math.floor(tonumber(parts[3]) or 0)
+      r = math.max(0, math.min(255, r))
+      g = math.max(0, math.min(255, g))
+      b = math.max(0, math.min(255, b))
+      local a = #parts >= 4 and tonumber(parts[4]) or nil
+      if a then
+        a = math.max(0, math.min(1, a))
+      end
+      local hex = string.format("%02x%02x%02x", r, g, b)
+      results[#results + 1] = { col_start = s, col_end = e, rgb_hex = hex, alpha = a }
+    end
+    search_start = e + 1
+  end
+  return results
+end
+
+---@param line string
 ---@param options iro.Options
 ---@return iro.Match[]
 function M.scan_line(line, options)
@@ -130,6 +165,22 @@ function M.scan_line(line, options)
         matches[#matches + 1] = { col_start = s, col_end = e, rgb_hex = expand_hex3(hex:lower()) }
       end
       init = e + 1
+    end
+  end
+
+  if options.css_fn then
+    local rgba_matches = find_rgba(line, 1)
+    for _, rm in ipairs(rgba_matches) do
+      local dominated = false
+      for _, m in ipairs(matches) do
+        if rm.col_start <= m.col_end and rm.col_end >= m.col_start then
+          dominated = true
+          break
+        end
+      end
+      if not dominated then
+        matches[#matches + 1] = rm
+      end
     end
   end
 
