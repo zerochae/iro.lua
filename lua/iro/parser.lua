@@ -17,7 +17,7 @@ end
 
 ---@param line string
 ---@param init integer
----@return integer?, integer?, string?
+---@return integer?, integer?, string?, boolean?
 local function find_hex6(line, init)
   local s, e, hex = line:find(HEX6, init)
   if not s then
@@ -28,12 +28,12 @@ local function find_hex6(line, init)
   if before:find("%w") or after:find("%x") then
     return find_hex6(line, e + 1)
   end
-  return s, e, hex
+  return s, e, hex, before == "["
 end
 
 ---@param line string
 ---@param init integer
----@return integer?, integer?, string?
+---@return integer?, integer?, string?, boolean?
 local function find_hex3(line, init)
   local s, e, hex = line:find(HEX3, init)
   if not s then
@@ -47,7 +47,7 @@ local function find_hex3(line, init)
   if hex:find("^%d+$") then
     return find_hex3(line, e + 1)
   end
-  return s, e, hex
+  return s, e, hex, before == "["
 end
 
 ---@param hex3 string
@@ -138,11 +138,11 @@ function M.scan_line(line, options)
   if options.RRGGBB then
     local init = 1
     while init <= #line do
-      local s, e, hex = find_hex6(line, init)
+      local s, e, hex, bracketed = find_hex6(line, init)
       if not s or not e or not hex then
         break
       end
-      matches[#matches + 1] = { col_start = s, col_end = e, rgb_hex = hex:lower() }
+      matches[#matches + 1] = { col_start = s, col_end = e, rgb_hex = hex:lower(), virtualtext_only = bracketed or nil }
       init = e + 1
     end
   end
@@ -150,7 +150,7 @@ function M.scan_line(line, options)
   if options.RGB then
     local init = 1
     while init <= #line do
-      local s, e, hex = find_hex3(line, init)
+      local s, e, hex, bracketed = find_hex3(line, init)
       if not s or not e or not hex then
         break
       end
@@ -162,7 +162,7 @@ function M.scan_line(line, options)
         end
       end
       if not dominated then
-        matches[#matches + 1] = { col_start = s, col_end = e, rgb_hex = expand_hex3(hex:lower()) }
+        matches[#matches + 1] = { col_start = s, col_end = e, rgb_hex = expand_hex3(hex:lower()), virtualtext_only = bracketed or nil }
       end
       init = e + 1
     end

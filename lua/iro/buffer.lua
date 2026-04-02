@@ -52,7 +52,8 @@ local function highlight_line(buf, row, options)
     local col_start = math.min(m.col_start - 1, line_len)
     local col_end = math.min(m.col_end, line_len)
     if col_start < col_end then
-      for _, mode in ipairs(modes) do
+      local effective_modes = m.virtualtext_only and { "virtualtext" } or modes
+      for _, mode in ipairs(effective_modes) do
         local hl_group = highlight.ensure(m.rgb_hex, mode, m.alpha)
         if mode == "virtualtext" then
           vim.api.nvim_buf_set_extmark(buf, ns, row, col_start, {

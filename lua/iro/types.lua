@@ -17,6 +17,7 @@
 ---@field col_end integer
 ---@field rgb_hex string
 ---@field alpha? number
+---@field virtualtext_only? boolean
 
 ---@class iro.RGB
 ---@field r number

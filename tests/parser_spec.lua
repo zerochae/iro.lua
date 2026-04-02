@@ -38,10 +38,17 @@ describe("parser", function()
       assert.are.equal(0, #m)
     end)
 
-    it("matches inside brackets", function()
+    it("marks hex inside brackets as virtualtext_only", function()
       local m = parser.scan_line('className="text-[#a4a9b2]"', RRGGBB)
       assert.are.equal(1, #m)
       assert.are.equal("a4a9b2", m[1].rgb_hex)
+      assert.is_true(m[1].virtualtext_only)
+    end)
+
+    it("does not mark hex outside brackets as virtualtext_only", function()
+      local m = parser.scan_line("color: #ff0000;", RRGGBB)
+      assert.are.equal(1, #m)
+      assert.is_nil(m[1].virtualtext_only)
     end)
 
     it("lowercases hex", function()
