@@ -105,6 +105,9 @@ function M.attach(buf, options)
 
   if options.lsp then
     lsp.attach(buf, lsp_refresh)
+    if vim.lsp.document_color then
+      vim.lsp.document_color.enable(false, { bufnr = buf })
+    end
   end
 
   vim.api.nvim_buf_attach(buf, false, {
