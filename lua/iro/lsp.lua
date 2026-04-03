@@ -126,6 +126,14 @@ function M.attach(buf, callback)
     end,
   })
 
+  ids[#ids + 1] = vim.api.nvim_create_autocmd("LspNotify", {
+    group = augroup,
+    buffer = buf,
+    callback = function()
+      debounced_request(buf, callback)
+    end,
+  })
+
   ids[#ids + 1] = vim.api.nvim_create_autocmd("LspDetach", {
     group = augroup,
     buffer = buf,
