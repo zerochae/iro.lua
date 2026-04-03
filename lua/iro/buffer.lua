@@ -42,6 +42,7 @@ local function highlight_line(buf, row, options)
         end
       end
       if not dominated then
+        lc.virtualtext_only = true
         matches[#matches + 1] = lc
       end
     end
